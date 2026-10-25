@@ -1,0 +1,39 @@
+{
+  "name": "node64",
+  "version": "1.0.0",
+  "description": "A JavaScript REPL-first operating system powered by Node.js and Linux",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "boot": "qemu-system-aarch64 -machine virt -cpu cortex-a72 -m 1024 -kernel \"$PWD/boot/vmlinuz\" -initrd \"$PWD/boot/initramfs.img\" -append \"console=ttyAMA0 rdinit=/init console=tty1\" -device virtio-gpu-pci,xres=1024,yres=768 -device virtio-keyboard-pci -display gtk",
+    "vncserver": "qemu-system-aarch64 -machine virt -cpu cortex-a72 -m 1024 -kernel \"$PWD/boot/vmlinuz\" -initrd \"$PWD/boot/initramfs.img\" -append \"console=ttyAMA0 rdinit=/init console=tty1\" -device virtio-gpu-pci,xres=1024,yres=768 -device virtio-keyboard-pci -display vnc=:0",
+    "spice": "qemu-system-aarch64 -machine virt -cpu cortex-a72 -m 1024 -kernel \"$PWD/boot/vmlinuz\" -initrd \"$PWD/boot/initramfs.img\" -append \"console=ttyAMA0 rdinit=/init console=tty1\" -device virtio-gpu-pci,xres=1024,yres=768 -device virtio-keyboard-pci -display none -spice addr=127.0.0.1,port=5930,disable-ticketing=on",
+    "unpack": "mkdir -p userfs/initramfs && tar -xzf userfs/initramfs.tar.gz -C userfs/initramfs",
+    "chroot": "sudo chroot userfs/initramfs /bin/node /etc/node64/repl.js",
+    "pack": "node src/pack.js"
+  },
+  "keywords": [
+    "node64",
+    "nodejs",
+    "operating-system",
+    "linux",
+    "arm64",
+    "qemu",
+    "repl"
+  ],
+  "type": "commonjs",
+  "license": "MIT",
+  "node64": {
+    "name": "Node64",
+    "kind": "operating-system",
+    "runtime": "Node.js",
+    "bootloader": "Linux kernel + initramfs",
+    "architecture": "aarch64",
+    "emulator": "QEMU",
+    "interface": "REPL",
+    "initramfs": {
+      "source": "userfs/initramfs",
+      "output": "boot/initramfs.img"
+    }
+  }
+}
